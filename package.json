@@ -22,10 +22,7 @@
     }
   },
   "lint-staged": {
-    "*.tsx": [
-      "tslint --fix",
-      "git add"
-    ]
+    "*.tsx": "tslint --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
