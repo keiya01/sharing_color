@@ -5,31 +5,35 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const { useState, useReducer } = React;
 
 const Form = styled.div`
-  width: 500px;
+  width: 90%;
+  max-width: 500px;
   height: 100%;
   padding: 20px;
   border: 2px solid #eeeeee;
   margin: 0 auto;
 `;
 
+const InputWrapper = styled.div`
+  text-align: center;
+`;
+
 const InputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  display: inline-block;
   position: relative;
 `;
 
 const Icon = styled.div`
   position: absolute;
   top: 6px;
-  left: 138px;
+  left: 10px;
   color: #aaa;
 `;
 
 const ColorInput = styled.input.attrs({ type: "text" })`
   width: 130px;
-  padding: 5px;
-  padding-left: 30px;
+  padding: 8px 0;
+  padding-left: 35px;
+  padding-right: 5px;
   font-size: 16px;
   border: none;
   border-top: 1px solid #FF684A;
@@ -122,7 +126,7 @@ const ColorForm: React.FC = () => {
       color = `#${color}`;
     }
 
-    if(color.length > 7) {
+    if (color.length > 7) {
       return;
     }
 
@@ -131,13 +135,15 @@ const ColorForm: React.FC = () => {
 
   return (
     <Form>
-      <InputContainer>
-        <Icon>
-          <FontAwesomeIcon icon={"hashtag"} />
-        </Icon>
-        <ColorInput value={text} onChange={handleChangeText} />
-        <Button onClick={handleOnClick}>register</Button>
-      </InputContainer>
+      <InputWrapper>
+        <InputContainer>
+          <Icon>
+            <FontAwesomeIcon icon={"hashtag"} />
+          </Icon>
+          <ColorInput value={text} onChange={handleChangeText} />
+          <Button onClick={handleOnClick}>register</Button>
+        </InputContainer>
+      </InputWrapper>
       {state.colors.map(item => (
         <p>{item.color}</p>
       ))}
