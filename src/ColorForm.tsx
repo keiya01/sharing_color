@@ -1,38 +1,44 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ColorPicker from './ColorPicker';
 
-const { useState, useReducer } = React;
+const { useState, useReducer, useRef, useLayoutEffect } = React;
 
 const Form = styled.div`
   width: 90%;
-  max-width: 500px;
+  max-width: 400px;
   height: 100%;
+  box-shadow: 1px 2px 6px #999;
   padding: 20px;
-  border: 2px solid #eeeeee;
   margin: 0 auto;
 `;
 
 const InputWrapper = styled.div`
-  text-align: center;
+text-align: center;
 `;
 
 const InputContainer = styled.div`
-  display: inline-block;
-  position: relative;
+display: inline-block;
+position: relative;
 `;
 
-const Icon = styled.div`
+const OpenPickerButton = styled.div.attrs({ title: "Click to open color picker" })`
   position: absolute;
-  top: 6px;
-  left: 10px;
-  color: #aaa;
+  top: 5px;
+  left: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #e7aded;
+  &:hover {
+    color: #e6c5ea;
+  }
 `;
 
 const ColorInput = styled.input.attrs({ type: "text" })`
   width: 130px;
   padding: 8px 0;
-  padding-left: 35px;
+  padding-left: 40px;
   padding-right: 5px;
   font-size: 16px;
   border: none;
@@ -66,7 +72,34 @@ const Button = styled.button`
   }
 `;
 
+const ColorBoxWrapper = styled.div`
+  width: 320px;
+  height: 160px;
+  margin: 0 auto;
+  margin-top: 20px;
+  overflow-y: scroll;
+  padding: 0 10px;
+`;
+
+const ColorBoxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+
+const ColorBox = styled.div`
+  display: flex;
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  box-shadow: 1px 2px 5px #bbb;
+  margin: 5px 10px;
+  cursor: pointer;
+`;
+
+
 interface Color {
+  id: number;
   color: string,
 }
 interface State {
@@ -78,7 +111,7 @@ const initialState: State = {
 
 interface Action {
   type: string,
-  color: Color,
+  color: string,
 }
 
 let colorId = 0;
@@ -88,7 +121,7 @@ const reducer = (state: State, action: Action) => {
       colorId++;
       const color = {
         id: colorId,
-        ...action.color,
+        color: action.color,
       }
       return {
         ...state,
@@ -102,9 +135,31 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
+const useLayoutFlexBox = (deps: [any]) => {
+  const colorBoxContainer = useRef<HTMLDivElement | null>(null);
+  const container = colorBoxContainer.current;
+
+  useLayoutEffect(() => {
+    if (!container) {
+      return
+    }
+
+    if (container.childElementCount > 4) {
+      container.style.justifyContent = "start";
+      return;
+    }
+
+    container.style.justifyContent = "center";
+  }, deps);
+
+  return colorBoxContainer;
+}
+
 const ColorForm: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [text, changeText] = useState("");
+  const [visible, setVisible] = useState(false);
+  const colorBoxContainer = useLayoutFlexBox([state.colors]);
 
   const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -114,7 +169,11 @@ const ColorForm: React.FC = () => {
     changeText(value);
   };
 
-  const handleOnClick = () => {
+  const handleOnRegiste = () => {
+    if (!visible) {
+      changeText("");
+    }
+
     const isHexadeciam = text.match(/^#?[0-9|a-f]{6}/i);
     if (!isHexadeciam) {
       return;
@@ -130,23 +189,43 @@ const ColorForm: React.FC = () => {
       return;
     }
 
-    dispatch({ type: "ADD_COLOR", color: { color } });
+    dispatch({ type: "ADD_COLOR", color });
+  }
+
+  const handleOnPressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      handleOnRegiste();
+    }
+  }
+
+  const handleOnTogglePicker = (argVisible: boolean) => () => {
+    setVisible(argVisible);
   }
 
   return (
     <Form>
       <InputWrapper>
         <InputContainer>
-          <Icon>
-            <FontAwesomeIcon icon={"hashtag"} />
-          </Icon>
-          <ColorInput value={text} onChange={handleChangeText} />
-          <Button onClick={handleOnClick}>register</Button>
+          <OpenPickerButton onClick={handleOnTogglePicker(!visible)}>
+            <FontAwesomeIcon icon="palette" />
+          </OpenPickerButton>
+          <ColorInput onKeyUp={handleOnPressEnter} value={text} onChange={handleChangeText} />
+          <Button onClick={handleOnRegiste}>register</Button>
+          <ColorPicker
+            visible={visible}
+            onClose={handleOnTogglePicker(false)}
+            color={text}
+            onChange={changeText}
+          />
         </InputContainer>
       </InputWrapper>
-      {state.colors.map(item => (
-        <p>{item.color}</p>
-      ))}
+      <ColorBoxWrapper>
+        <ColorBoxContainer ref={colorBoxContainer}>
+          {state.colors.map(item => (
+            <ColorBox key={item.id} style={{ backgroundColor: item.color }} />
+          ))}
+        </ColorBoxContainer>
+      </ColorBoxWrapper>
     </Form>
   );
 }

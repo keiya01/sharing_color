@@ -4,9 +4,9 @@ import App from './App';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faHashtag, faPalette } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faHashtag);
+library.add(faHashtag, faPalette);
 
 ReactDOM.render(
   <App />,
