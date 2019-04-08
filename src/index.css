@@ -22,7 +22,6 @@ input, button, textarea{
 }
 button:focus, input:focus, textarea:focus {
   outline: none;
-  border: none;
 }
 textarea{
 	resize: none;

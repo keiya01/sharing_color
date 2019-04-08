@@ -8,7 +8,6 @@ const { useState, useReducer, useRef, useLayoutEffect } = React;
 const Form = styled.div`
   width: 90%;
   max-width: 400px;
-  height: 100%;
   box-shadow: 1px 2px 6px #999;
   padding: 20px;
 `;
@@ -32,7 +31,7 @@ position: relative;
 
 const OpenPickerButton = styled.div.attrs({ title: "Click to open color picker" })`
   position: absolute;
-  top: 5px;
+  top: 8px;
   left: 12px;
   font-size: 18px;
   cursor: pointer;
@@ -56,9 +55,6 @@ const ColorInput = styled.input.attrs({ type: "text" })`
   border-bottom-left-radius: 5px;
   letter-spacing: 0.15em;
   color: #555;
-  &:focus {
-    outline: none;
-  }
 `;
 
 const Button = styled.button`
@@ -73,9 +69,6 @@ const Button = styled.button`
   cursor: pointer;
   &:hover {
     background-color: #FF937E;
-  }
-  &:focus {
-    outline: none;
   }
 `;
 
