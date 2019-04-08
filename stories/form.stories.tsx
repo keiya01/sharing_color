@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../src/index.css";
 import { storiesOf } from "@storybook/react"
 import ColorForm from '../src/ColorForm';
 import { library } from '@fortawesome/fontawesome-svg-core';
