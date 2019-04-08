@@ -6,6 +6,7 @@ const PickerContainer = styled.div`
   position: absolute;
   bottom: -260px;
   left: -40px;
+  z-index: 10;
 `;
 
 const PickerWrapper = styled.div`

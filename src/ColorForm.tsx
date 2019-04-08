@@ -11,7 +11,6 @@ const Form = styled.div`
   height: 100%;
   box-shadow: 1px 2px 6px #999;
   padding: 20px;
-  margin: 0 auto;
 `;
 
 const HidePickerArea = styled.div`
@@ -87,6 +86,7 @@ const ColorBoxWrapper = styled.div`
   margin-top: 20px;
   overflow-y: scroll;
   padding: 0 10px;
+  position: relative;
 `;
 
 const ColorBoxContainer = styled.div`
@@ -211,31 +211,33 @@ const ColorForm: React.FC = () => {
   }
 
   return (
-    <Form>
+    <>
       <HidePickerArea onClick={handleOnTogglePicker(false)} />
-      <InputWrapper>
-        <InputContainer>
-          <OpenPickerButton onClick={handleOnTogglePicker(!visible)}>
-            <FontAwesomeIcon icon="palette" />
-          </OpenPickerButton>
-          <ColorInput onKeyUp={handleOnPressEnter} value={text} onChange={handleChangeText} />
-          <Button onClick={handleOnRegiste}>register</Button>
-          <ColorPicker
-            visible={visible}
-            onClose={handleOnTogglePicker(false)}
-            color={text}
-            onChange={changeText}
-          />
-        </InputContainer>
-      </InputWrapper>
-      <ColorBoxWrapper>
-        <ColorBoxContainer ref={colorBoxContainer}>
-          {state.colors.map(item => (
-            <ColorBox key={item.id} style={{ backgroundColor: item.color }} />
-          ))}
-        </ColorBoxContainer>
-      </ColorBoxWrapper>
-    </Form>
+      <Form>
+        <InputWrapper>
+          <InputContainer>
+            <OpenPickerButton onClick={handleOnTogglePicker(!visible)}>
+              <FontAwesomeIcon icon="palette" />
+            </OpenPickerButton>
+            <ColorInput onKeyUp={handleOnPressEnter} value={text} onChange={handleChangeText} />
+            <Button onClick={handleOnRegiste}>register</Button>
+            <ColorPicker
+              visible={visible}
+              onClose={handleOnTogglePicker(false)}
+              color={text}
+              onChange={changeText}
+            />
+          </InputContainer>
+        </InputWrapper>
+        <ColorBoxWrapper>
+          <ColorBoxContainer ref={colorBoxContainer}>
+            {state.colors.map(item => (
+              <ColorBox key={item.id} style={{ backgroundColor: item.color }} />
+            ))}
+          </ColorBoxContainer>
+        </ColorBoxWrapper>
+      </Form>
+    </>
   );
 }
 
