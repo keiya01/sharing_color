@@ -7,19 +7,29 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const FormWrapper = styled.div`
+const TopContents = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 `;
 
+const TopTitle = styled.h1`
+  font-size: 35px;
+  color: #FF684A;
+  letter-spacing: 0.3em;
+  margin-top: -50px;
+  margin-bottom: 50px;
+`;
+
 const ColorTopScreen: React.FC = () => {
   return (
     <Container>
-      <FormWrapper>
+      <TopContents>
+        <TopTitle>cocon</TopTitle>
         <ColorForm />
-      </FormWrapper>
+      </TopContents>
     </Container>
   );
 }

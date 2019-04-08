@@ -42,7 +42,7 @@ const OpenPickerButton = styled.div.attrs({ title: "Click to open color picker" 
 `;
 
 const ColorInput = styled.input.attrs({ type: "text" })`
-  width: 130px;
+  width: 70%;
   padding: 8px 0;
   padding-left: 40px;
   padding-right: 5px;
@@ -55,6 +55,7 @@ const ColorInput = styled.input.attrs({ type: "text" })`
   border-bottom-left-radius: 5px;
   letter-spacing: 0.15em;
   color: #555;
+  text-align: center;
 `;
 
 const Button = styled.button`
