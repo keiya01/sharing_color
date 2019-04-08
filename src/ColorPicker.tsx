@@ -51,7 +51,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({visible, color, onChange, onCl
   return (
     <PickerContainer>
       <PickerWrapper>
-        <ChromePicker color={color} onChange={handleOnChangeColor} />
+        <ChromePicker disableAlpha={true} color={color} onChange={handleOnChangeColor} />
         <CloseButton>
           <ButtonText onClick={onClose}>Close</ButtonText>
         </CloseButton>

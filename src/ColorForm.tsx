@@ -1,5 +1,5 @@
 import * as React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ColorPicker from './ColorPicker';
 
@@ -12,6 +12,14 @@ const Form = styled.div`
   box-shadow: 1px 2px 6px #999;
   padding: 20px;
   margin: 0 auto;
+`;
+
+const HidePickerArea = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
 
 const InputWrapper = styled.div`
@@ -204,6 +212,7 @@ const ColorForm: React.FC = () => {
 
   return (
     <Form>
+      <HidePickerArea onClick={handleOnTogglePicker(false)} />
       <InputWrapper>
         <InputContainer>
           <OpenPickerButton onClick={handleOnTogglePicker(!visible)}>
