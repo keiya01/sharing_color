@@ -56,11 +56,21 @@ const ColorInput = styled.input.attrs({ type: "text" })`
   letter-spacing: 0.15em;
   color: #555;
   text-align: center;
+  &:focus {
+    border-top: 1px solid #FF937E;
+    border-left: 1px solid #FF937E;
+    border-bottom: 1px solid #FF937E;
+  }
+  &::placeholder {
+    color: #aaa;
+    font-size: 14px;
+  }
 `;
 
 const Button = styled.button`
   padding: 8px;
-  font-size: 15px;
+  padding-bottom: 5px;
+  font-size: 14px;
   background-color: #FF684A;
   color: #fff;
   letter-spacing: 0.07em;
@@ -70,6 +80,7 @@ const Button = styled.button`
   cursor: pointer;
   &:hover {
     background-color: #FF937E;
+    border: 1px solid #FF937E;
   }
 `;
 
@@ -102,13 +113,19 @@ const ColorBox = styled.div`
 
 interface Color {
   id: number;
-  color: string,
+  color: string;
+}
+
+interface ColorError {
+  codeError?: string;
 }
 interface State {
   colors: Color[],
+  errors: ColorError,
 }
 const initialState: State = {
   colors: [],
+  errors: {},
 };
 
 interface Action {
@@ -132,6 +149,14 @@ const reducer = (state: State, action: Action) => {
           color,
         ]
       };
+    }
+    case "CODE_ERROR": {
+      return {
+        ...state,
+        errors: {
+          codeError: "カラーコードが間違っています\nヒント：#を含む7文字の16進数で入力してください(ex. #FFFFFF)"
+        }
+      }
     }
     default: return state;
   }
@@ -213,8 +238,13 @@ const ColorForm: React.FC = () => {
             <OpenPickerButton onClick={handleOnTogglePicker(!visible)}>
               <FontAwesomeIcon icon="palette" />
             </OpenPickerButton>
-            <ColorInput onKeyUp={handleOnPressEnter} value={text} onChange={handleChangeText} />
-            <Button onClick={handleOnRegiste}>register</Button>
+            <ColorInput
+              onKeyUp={handleOnPressEnter}
+              value={text}
+              onChange={handleChangeText}
+              placeholder="ex. #FFFFFF"
+            />
+            <Button onClick={handleOnRegiste}>色を追加</Button>
             <ColorPicker
               visible={visible}
               onClose={handleOnTogglePicker(false)}
