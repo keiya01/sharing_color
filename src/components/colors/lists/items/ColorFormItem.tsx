@@ -46,7 +46,7 @@ export interface ColorError {
 const ColorFormItem: React.FC<Color> = ({ id, color }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleOnMouseEnter = () => {
+  const handleOnMouseOver = () => {
     setIsHovered(true);
   }
 
@@ -59,7 +59,7 @@ const ColorFormItem: React.FC<Color> = ({ id, color }) => {
       <ColorBox
         key={id}
         style={{ backgroundColor: color }}
-        onMouseEnter={handleOnMouseEnter}
+        onMouseOver={handleOnMouseOver}
         onMouseLeave={handleOnMouseLeave}
       >
         {
