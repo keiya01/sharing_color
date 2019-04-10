@@ -70,6 +70,7 @@ const ColorInput = styled.input.attrs({ type: "text" })`
 `;
 
 const Button = styled.button`
+  transition: background-color 200ms ease-in-out;
   padding: 8px;
   padding-bottom: 5px;
   font-size: 14px;
