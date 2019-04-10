@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ColorTopScreen from "./ColorTopScreen";
+import ColorTopScreen from "./colors/ColorTopScreen";
 
 const AppRoute: React.FC = () => {
   return (

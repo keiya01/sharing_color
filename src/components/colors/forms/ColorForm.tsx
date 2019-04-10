@@ -1,13 +1,15 @@
 import * as React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ColorPicker from './ColorPicker';
+import ColorPicker from '../ColorPicker';
+import ColorFormList from "../lists/ColorFormList";
+import { Color, ColorError } from "../lists/items/ColorFormItem";
+import { BaseColor, ActiveColor } from "../../../constants/color"
+import { CommonBody } from '../../common/TextComponents';
 
-const { useState, useReducer, useRef, useLayoutEffect } = React;
+const { useState, useReducer } = React;
 
 const Form = styled.div`
-  width: 90%;
-  max-width: 400px;
   box-shadow: 1px 2px 6px #999;
   padding: 20px;
 `;
@@ -48,18 +50,18 @@ const ColorInput = styled.input.attrs({ type: "text" })`
   padding-right: 5px;
   font-size: 16px;
   border: none;
-  border-top: 1px solid #FF684A;
-  border-left: 1px solid #FF684A;
-  border-bottom: 1px solid #FF684A;
+  border-top: 1px solid ${BaseColor};
+  border-left: 1px solid ${BaseColor};
+  border-bottom: 1px solid ${BaseColor};
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   letter-spacing: 0.15em;
   color: #555;
   text-align: center;
   &:focus {
-    border-top: 1px solid #FF937E;
-    border-left: 1px solid #FF937E;
-    border-bottom: 1px solid #FF937E;
+    border-top: 1px solid ${ActiveColor};
+    border-left: 1px solid ${ActiveColor};
+    border-bottom: 1px solid ${ActiveColor};
   }
   &::placeholder {
     color: #aaa;
@@ -71,74 +73,52 @@ const Button = styled.button`
   padding: 8px;
   padding-bottom: 5px;
   font-size: 14px;
-  background-color: #FF684A;
+  background-color: ${BaseColor};
   color: #fff;
   letter-spacing: 0.07em;
-  border: 1px solid #FF684A;
+  border: 1px solid ${BaseColor};
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   cursor: pointer;
   &:hover {
-    background-color: #FF937E;
-    border: 1px solid #FF937E;
+    background-color: ${ActiveColor};
+    border: 1px solid ${ActiveColor};
   }
 `;
 
-const ColorBoxWrapper = styled.div`
-  width: 320px;
-  height: 160px;
-  margin: 0 auto;
-  margin-top: 20px;
-  overflow-y: scroll;
-  padding: 0 10px;
-  position: relative;
+const ErrorBox = styled.div`
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
 `;
 
-const ColorBoxContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const ColorBox = styled.div`
-  display: flex;
-  width: 60px;
-  height: 60px;
-  border-radius: 5px;
-  box-shadow: 1px 2px 5px #bbb;
-  margin: 5px 10px;
-  cursor: pointer;
-`;
-
-
-interface Color {
-  id: number;
-  color: string;
-}
-
-interface ColorError {
-  codeError?: string;
-}
 interface State {
   colors: Color[],
   errors: ColorError,
 }
 const initialState: State = {
   colors: [],
-  errors: {},
+  errors: {
+    codeError: "",
+  },
 };
 
 interface Action {
-  type: string,
-  color: string,
+  type?: string,
+  color?: string,
 }
 
 let colorId = 0;
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_COLOR": {
       colorId++;
-      const color = {
+
+      if (!action.color) {
+        return state
+      }
+
+      const color: Color = {
         id: colorId,
         color: action.color,
       }
@@ -154,7 +134,15 @@ const reducer = (state: State, action: Action) => {
       return {
         ...state,
         errors: {
-          codeError: "カラーコードが間違っています\nヒント：#を含む7文字の16進数で入力してください(ex. #FFFFFF)"
+          codeError: "6文字の16進数で入力してください"
+        }
+      }
+    }
+    case "RESET_ERROR": {
+      return {
+        ...state,
+        errors: {
+          codeError: ""
         }
       }
     }
@@ -162,58 +150,37 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
-const useLayoutFlexBox = (deps: [any]) => {
-  const colorBoxContainer = useRef<HTMLDivElement | null>(null);
-  const container = colorBoxContainer.current;
-
-  useLayoutEffect(() => {
-    if (!container) {
-      return
-    }
-
-    if (container.childElementCount > 4) {
-      container.style.justifyContent = "start";
-      return;
-    }
-
-    container.style.justifyContent = "center";
-  }, deps);
-
-  return colorBoxContainer;
-}
-
 const ColorForm: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [text, changeText] = useState("");
   const [visible, setVisible] = useState(false);
-  const colorBoxContainer = useLayoutFlexBox([state.colors]);
 
   const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (value.length > 7) {
+      dispatch({ type: "CODE_ERROR" });
       return;
     }
     changeText(value);
   };
 
   const handleOnRegiste = () => {
+    dispatch({ type: "RESET_ERROR" });
+    
+    const isHexadeciam = text.match(/^#?[0-9|a-f]{6}/i);
+    if (!isHexadeciam || text.length > 7) {
+      dispatch({ type: "CODE_ERROR" });
+      return;
+    }
+    
     if (!visible) {
       changeText("");
     }
-
-    const isHexadeciam = text.match(/^#?[0-9|a-f]{6}/i);
-    if (!isHexadeciam) {
-      return;
-    }
-
-    const hasHashtag = text.startsWith("#");
+    
     let color = text;
+    const hasHashtag = color.startsWith("#");
     if (!hasHashtag) {
-      color = `#${color}`;
-    }
-
-    if (color.length > 7) {
-      return;
+      color = `#${text}`;
     }
 
     dispatch({ type: "ADD_COLOR", color });
@@ -245,21 +212,23 @@ const ColorForm: React.FC = () => {
               placeholder="ex. #FFFFFF"
             />
             <Button onClick={handleOnRegiste}>色を追加</Button>
+            {
+              state.errors.codeError !== ""
+              &&
+              <ErrorBox>
+                <CommonBody fontColor={"#f41446"}>{state.errors.codeError}</CommonBody>
+              </ErrorBox>
+            }
             <ColorPicker
               visible={visible}
               onClose={handleOnTogglePicker(false)}
               color={text}
               onChange={changeText}
+              position={{ top: "50px", left: "-30px" }}
             />
           </InputContainer>
         </InputWrapper>
-        <ColorBoxWrapper>
-          <ColorBoxContainer ref={colorBoxContainer}>
-            {state.colors.map(item => (
-              <ColorBox key={item.id} style={{ backgroundColor: item.color }} />
-            ))}
-          </ColorBoxContainer>
-        </ColorBoxWrapper>
+        <ColorFormList onPickerHide={handleOnTogglePicker} colors={state.colors} />
       </Form>
     </>
   );

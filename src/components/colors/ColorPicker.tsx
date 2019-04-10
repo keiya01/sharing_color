@@ -2,10 +2,24 @@ import * as React from "react";
 import styled from "styled-components";
 import { ChromePicker, ColorResult } from "react-color";
 
+interface PickerPoistion {
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+}
+
 const PickerContainer = styled.div`
   position: absolute;
-  bottom: -260px;
-  left: -40px;
+  ${(props: {position: PickerPoistion}) => {
+    const {position} = props;
+    return `
+      top: ${position.top};
+      bottom: ${position.bottom};
+      left: ${position.left};
+      right: ${position.right};
+    `
+  }}
   z-index: 10;
 `;
 
@@ -24,7 +38,7 @@ const CloseButton = styled.div`
 
 const ButtonText = styled.p`
   color: #999;
-  padding-top: 10px;
+  padding-top: 30px;
   font-size: 15px;
   cursor: pointer;
   &:hover {
@@ -37,9 +51,10 @@ interface ColorPickerProps {
   onClose: () => void;
   color: string;
   onChange: (color: string) => void;
+  position: PickerPoistion;
 }
 
-const ColorPicker: React.FC<ColorPickerProps> = ({visible, color, onChange, onClose}) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({visible, color, onChange, onClose, position}) => {
 
   const handleOnChangeColor = (event: ColorResult) => {
     onChange(event.hex);
@@ -50,7 +65,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({visible, color, onChange, onCl
   }
 
   return (
-    <PickerContainer>
+    <PickerContainer position={position}>
       <PickerWrapper>
         <ChromePicker disableAlpha={true} color={color} onChange={handleOnChangeColor} />
         <CloseButton>

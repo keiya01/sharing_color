@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import ColorForm from "./ColorForm";
+import ColorForm from "./forms/ColorForm";
 
 const Container = styled.div`
   width: 100%;

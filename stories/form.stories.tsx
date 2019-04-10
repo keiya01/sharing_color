@@ -1,7 +1,7 @@
 import * as React from "react";
 import "../src/index.css";
 import { storiesOf } from "@storybook/react"
-import ColorForm from '../src/ColorForm';
+import ColorForm from './components/colors/forms/ColorForm';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faHashtag, faPalette } from '@fortawesome/free-solid-svg-icons';
 
