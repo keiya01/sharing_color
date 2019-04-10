@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FadeIn } from 'src/components/common/AnimationComponents';
+import { FadeIn, Scaling } from 'src/components/common/AnimationComponents';
 
 const { useState } = React;
 
@@ -55,22 +55,24 @@ const ColorFormItem: React.FC<Color> = ({ id, color }) => {
   }
 
   return (
-    <ColorBox
-      key={id}
-      style={{ backgroundColor: color }}
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
-    >
-      {
-        isHovered &&
-        <FadeIn>
-          <CloseIcon color={color}>
-            <FontAwesomeIcon icon="times-circle" />
-          </CloseIcon>
-          <ColorCode>{color}</ColorCode>
-        </FadeIn>
-      }
-    </ColorBox>
+    <Scaling>
+      <ColorBox
+        key={id}
+        style={{ backgroundColor: color }}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+      >
+        {
+          isHovered &&
+          <FadeIn>
+            <CloseIcon color={color}>
+              <FontAwesomeIcon icon="times-circle" />
+            </CloseIcon>
+            <ColorCode>{color}</ColorCode>
+          </FadeIn>
+        }
+      </ColorBox>
+    </Scaling>
   );
 };
 
