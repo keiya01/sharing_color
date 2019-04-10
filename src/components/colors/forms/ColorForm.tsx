@@ -134,7 +134,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         errors: {
-          codeError: "6文字の16進数で入力してください"
+          codeError: "16進数のカラーコードを入力してください"
         }
       }
     }
@@ -167,8 +167,13 @@ const ColorForm: React.FC = () => {
   const handleOnRegiste = () => {
     dispatch({ type: "RESET_ERROR" });
     
-    const isHexadeciam = text.match(/^#?[0-9|a-f]{6}/i);
-    if (!isHexadeciam || text.length > 7) {
+    const hexadeciam = text.match(/^#?[0-9|a-f]{6}/i);
+    if (!hexadeciam) {
+      dispatch({ type: "CODE_ERROR" });
+      return;
+    }
+
+    if (hexadeciam[0][0] !== "#" && text.length > 6) {
       dispatch({ type: "CODE_ERROR" });
       return;
     }
@@ -177,10 +182,10 @@ const ColorForm: React.FC = () => {
       changeText("");
     }
     
-    let color = text;
+    let color = text.toUpperCase();
     const hasHashtag = color.startsWith("#");
     if (!hasHashtag) {
-      color = `#${text}`;
+      color = `#${color}`;
     }
 
     dispatch({ type: "ADD_COLOR", color });
